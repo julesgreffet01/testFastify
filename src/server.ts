@@ -1,13 +1,13 @@
 import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { appRoutes} from "./Routes/route.js";
 
 const fastify: FastifyInstance = Fastify({
     requestTimeout: 5000,
     caseSensitive: true,
 });
 
-fastify.get('/', async function handler(request: FastifyRequest, reply: FastifyReply) {
-    return { hello: 'world' };
-});
+
+fastify.register(appRoutes);
 
 const start = async () => {
     try {
