@@ -1,18 +1,34 @@
-FROM node:22-alpine
-
+# --- Build stage: compile TS -> JS ------------------------------------------
+FROM node:22-alpine AS builder
 WORKDIR /app
 
-# Copie uniquement les fichiers de dépendances pour optimiser le cache
+# Meilleur cache: d'abord les manifests
 COPY package*.json ./
+# Installe toutes les deps (prod + dev, pour compiler)
+RUN npm ci
 
-# Installe les dépendances
-RUN npm install --production
+# Copie du code
+COPY tsconfig.json ./
+COPY src ./src
 
-# Copie le reste du code de l'application
-COPY . .
+# Compile
+RUN npm run build
+# Optionnel: enlève les types locaux si tu en génères ailleurs
 
-# Expose le port sur lequel ton app écoute
+# --- Runtime stage: image légère, deps prod uniquement ----------------------
+FROM node:22-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Copie uniquement les manifests, puis installe deps prod
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# Copie le build compilé
+COPY --from=builder /app/dist ./dist
+
+# (si tu as des assets statiques à runtime, copie-les ici)
+# COPY public ./public
+
 EXPOSE 3000
-
-# Commande de lancement
-CMD ["node", "server.js"]
+CMD ["node", "dist/server.js"]
