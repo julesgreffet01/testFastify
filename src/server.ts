@@ -3,8 +3,7 @@ import { appRoutes} from "./Routes/route.js";
 import {emailRoutes} from "./Routes/emailRoute.js";
 
 const fastify: FastifyInstance = Fastify({
-    requestTimeout: 5000,
-    caseSensitive: true,
+    logger: true
 });
 
 
