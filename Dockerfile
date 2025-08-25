@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3000
 
 # Commande de lancement
-CMD ["node", "dist/server.js"]
+CMD ["node", "server.js"]
