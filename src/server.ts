@@ -1,4 +1,4 @@
-import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import Fastify, { FastifyInstance } from 'fastify';
 import { appRoutes} from "./Routes/route.js";
 
 const fastify: FastifyInstance = Fastify({
